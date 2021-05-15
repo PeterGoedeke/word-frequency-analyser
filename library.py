@@ -36,3 +36,12 @@ class Library:
         return dict(reduce(lambda a, c: a + c,
             [[(e, 1 - i / len(buckets)) for e in l] for i, l in enumerate(buckets)]
         ))
+
+    def get_weightings(self) -> Dict[str, float]:
+        freq_weightings = self.get_frequency_weightings()
+        ubiq_weightings = self.get_ubiquity_weightings()
+
+        # print(freq_weightings['sie'])
+        # print(ubiq_weightings['sie'])
+
+        return { key: (freq_weightings[key] + ubiq_weightings[key]) / 2 for key in freq_weightings }
