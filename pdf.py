@@ -72,3 +72,10 @@ for i, book in enumerate(books):
             pass
     except KeyError:
         pass
+
+l = library.get_weightings()
+
+
+out = '\n'.join(f'{k}: {round(v, 4)}' for k,v in sorted(list(l.items()), key=lambda t: t[1], reverse=True))
+with open('./out.txt', 'w') as file:
+    file.write(out)
