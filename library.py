@@ -11,6 +11,19 @@ class Library:
         word_counts = Counter(word for word in r.split() if word in self.dictionary)
         self.resources.append(word_counts)
 
+    def merge_capitalisations(self) -> None:
+        freqs = self.get_frequencies()
+        
+    @staticmethod
+    def combine_cases(resource) -> None:
+        for word in list(resource.keys()):
+            if word.lower() != word and word.lower() in resource:
+                lower, higher = word, word.lower()
+                if resource[word.lower()] < resource[word]:
+                    lower, higher = higher, lower
+                print(f'merging {lower} with {resource[lower]} onto {higher} with {resource[higher]}')
+                resource[higher] += resource.pop(lower)
+
     def get_frequencies(self) -> Counter:
         freqs = reduce(lambda a, c: a.update(c) or a, self.resources)
         # self.combine_cases(freqs)
