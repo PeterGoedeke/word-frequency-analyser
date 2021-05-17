@@ -37,3 +37,8 @@ class GermanLanguage:
             if ss_form in self.dictcc:
                 return self.dictcc[ss_form]
         return None
+
+    def is_valid_word(self, word: str, pos: str) -> bool:
+        if pos == 'NOUN':
+            return bool(self.get_article(word))
+        return True
