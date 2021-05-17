@@ -61,17 +61,30 @@ l2 = Library(de)
 
 for i, book in enumerate(books):
     try:
-        print(book)
+        # print(book)
         resource_fragments = epub2text(f'{resource_dir}/{book}')
         resource = '\n'.join(resource_fragments)
         library.add_resource(resource)
         if i == 0:
             l2.add_resource(resource)
-        if i == 2:
-            # print(resource)
+            print(resource)
+            exit
+        if i == 3:
+            with open('./yeet.txt', 'w') as f:
+                f.write(resource)
             pass
     except KeyError:
         pass
+
+# print(library.get_frequencies().most_common(25))
+# print(library.get_ubiquities().most_common(25))
+
+# print(l2.get_frequencies().most_common(25))
+# print(l2.get_ubiquities().most_common(25))
+
+# print(library.check_word('drei'))
+# print(library.check_word('dann'))
+# print(library.check_word('mich'))
 
 l = library.get_weightings()
 
@@ -79,3 +92,27 @@ l = library.get_weightings()
 out = '\n'.join(f'{k}: {round(v, 4)}' for k,v in sorted(list(l.items()), key=lambda t: t[1], reverse=True))
 with open('./out.txt', 'w') as file:
     file.write(out)
+
+# tests = [] # type: List['Corpus']
+# for book in books:
+#     try:
+#         tests.append(Corpus('\n'.join(epub2text(f'/home/peter/Music/6000.German.e-book.Collection.epub/{book}')), de))
+#         print(book)
+#     except KeyError:
+#         print('yote')
+
+# c = Corpus(out, de)
+# print(c.get_frequency_percentiles())
+# print(Corpus.get_ubiquity_percentiles(tests))
+
+# words = out.split()
+# filtered_words = [word for word in words if word in de]
+# # print(filtered_words)
+
+# word_counter = Counter(filtered_words)
+
+# print('\n'.join([f'{x}: {y}' for x,y in word_counter.most_common(1000)]))
+# print(len(word_counter.keys()))
+
+
+# print(sum([y for x,y in word_counter.most_common(1000)]) / sum([y for x,y in word_counter.most_common()]))
