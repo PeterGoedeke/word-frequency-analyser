@@ -49,3 +49,21 @@ class Word:
         self.text = text
         self.pos = pos
         self.freq = freq
+
+    def to_sheet(self):
+        return f'{self.display_form()}\t=GOOGLETRANSLATE("{self.translate_form()}", "de", "en")\t{self.freq}'
+
+    def display_form(self) -> str:
+        if self.pos == 'NOUN':
+            return f'{self.language.get_article(self.text)} {self.text}'
+        return self.text
+    
+    def translate_form(self) -> str:
+        if self.pos == 'NOUN':
+            return f'{self.language.get_article(self.text)} {self.text}'
+        elif self.pos == 'VERB':
+            return f'zu {self.text}'
+        return self.text
+
+    def __str__(self) -> str:
+        return self.text
