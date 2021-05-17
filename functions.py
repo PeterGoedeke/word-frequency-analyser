@@ -23,7 +23,7 @@ class GermanLanguage:
                     gender = gender_articles[gender_result[0]]
                     genders[word] = gender
         self.dictcc = genders
-
+    
     def get_article(self, word: str) -> Optional[str]:
         gd_gender = gd.get_gender(word)
         if gd_gender:
