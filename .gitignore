@@ -1,5 +1,8 @@
 *.txt
+!requirements.txt
 *.epub
+dictionary
+.vscode
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
