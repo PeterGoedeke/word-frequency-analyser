@@ -42,3 +42,10 @@ class GermanLanguage:
         if pos == 'NOUN':
             return bool(self.get_article(word))
         return True
+
+class Word:
+    def __init__(self, language: 'GermanLanguage', text: str, pos: str, freq: int) -> None:
+        self.language = language
+        self.text = text
+        self.pos = pos
+        self.freq = freq
