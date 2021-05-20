@@ -67,3 +67,27 @@ class Word:
 
     def __str__(self) -> str:
         return self.text
+articles = { 'der ', 'die ', 'das ' }
+class Translation:
+    def __init__(self, source: str, dest: str) -> None:
+        self.source = source
+        self.dest = dest
+    
+    @staticmethod
+    def from_sheet(line: str) -> 'Translation':
+        source, dest = line.split('\t')
+        return Translation(source, dest)
+
+    def get_root_source(self) -> str:
+        if self.source.lower().startswith('zu '):
+            return self.source[3:]
+        elif self.source.lower()[:4] in articles:
+            return self.source[4:]
+        return self.source.lower()
+
+    def get_root_dest(self) -> str:
+        if self.dest.lower().startswith('to '):
+            return self.dest[3:]
+        elif self.dest.lower().startswith('the '):
+            return self.dest[4:]
+        return self.dest.lower()
