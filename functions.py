@@ -1,9 +1,13 @@
 import re
 from collections import defaultdict
-from typing import DefaultDict, Dict, Optional
+from typing import DefaultDict, Dict, List, Optional
+from enum import Enum
 
 from genderdeterminator import GenderDeterminator
 gd = GenderDeterminator()
+import enchant
+english_dict = enchant.Dict('en_US')
+german_dict = enchant.Dict('de_DE')
 
 gender_articles = defaultdict(lambda: '') # type: DefaultDict[str, str]
 gender_articles.update({'n': 'das', 'm': 'der', 'f': 'die', 'pl': 'die'})
@@ -41,7 +45,7 @@ class GermanLanguage:
     def is_valid_word(self, word: str, pos: str) -> bool:
         if pos == 'NOUN':
             return bool(self.get_article(word))
-        return True
+        return german_dict.check(word)
 
 class Word:
     def __init__(self, language: 'GermanLanguage', text: str, pos: str, freq: int) -> None:
@@ -67,6 +71,13 @@ class Word:
 
     def __str__(self) -> str:
         return self.text
+
+class WarningLevel(Enum):
+    CLEAR = 0
+    FAILURE = 1
+    SPELLING = 2
+    WRONG_FORM = 3
+
 articles = { 'der ', 'die ', 'das ' }
 class Translation:
     def __init__(self, source: str, dest: str) -> None:
@@ -91,3 +102,11 @@ class Translation:
         elif self.dest.lower().startswith('the '):
             return self.dest[4:]
         return self.dest.lower()
+
+    # change the dictionary here to enchant
+    def get_warning_category(self) -> 'WarningLevel':
+        if self.get_root_dest() == self.get_root_source():
+            return WarningLevel.FAILURE
+        if not english_dict.check(self.get_root_dest()):
+            return WarningLevel.SPELLING
+        return WarningLevel.CLEAR
