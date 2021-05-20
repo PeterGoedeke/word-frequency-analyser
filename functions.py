@@ -110,3 +110,9 @@ class Translation:
         if not english_dict.check(self.get_root_dest()):
             return WarningLevel.SPELLING
         return WarningLevel.CLEAR
+
+def partition_warnings(ts: List['Translation']) -> Dict['WarningLevel', List['Translation']]:
+    output = defaultdict(lambda: [])
+    for t in ts:
+        output[t.get_warning_category()].append(t)
+    return output
