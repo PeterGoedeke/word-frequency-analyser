@@ -1,6 +1,6 @@
 import re
 from collections import defaultdict
-from typing import DefaultDict, Dict, List, Optional
+from typing import DefaultDict, Dict, List, Optional, Tuple
 from enum import Enum
 
 from genderdeterminator import GenderDeterminator
@@ -11,6 +11,17 @@ german_dict = enchant.Dict('de_DE')
 
 gender_articles = defaultdict(lambda: '') # type: DefaultDict[str, str]
 gender_articles.update({'n': 'das', 'm': 'der', 'f': 'die', 'pl': 'die'})
+
+def simplify_pos(pos: str) -> str:
+    return pos if pos == 'NOUN' or pos == 'VERB' else 'OTHER'
+
+def fix_text_casing(text: str, pos: str) -> str:
+    return text if pos == 'NOUN' else text.lower()
+
+def token_to_word_tuple(token) -> Tuple[str, str]:
+    pos = simplify_pos(token.pos_)
+    text = fix_text_casing(token.lemma_, token.pos_)
+    return (text, pos)
 
 class GermanLanguage:
     def __init__(self) -> None:
