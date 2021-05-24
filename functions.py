@@ -87,18 +87,19 @@ class WarningLevel(Enum):
     CLEAR = 0
     FAILURE = 1
     SPELLING = 2
-    WRONG_FORM = 3
 
 articles = { 'der ', 'die ', 'das ' }
 class Translation:
-    def __init__(self, source: str, dest: str) -> None:
+    def __init__(self, source: str, dest: str, freq: int, pos: str) -> None:
         self.source = source
         self.dest = dest
+        self.freq = freq
+        self.pos = pos
     
     @staticmethod
     def from_sheet(line: str) -> 'Translation':
-        source, dest = line.split('\t')
-        return Translation(source, dest)
+        source, dest, freq, pos = line.split('\t')
+        return Translation(source, dest, int(freq), pos)
 
     def get_root_source(self) -> str:
         if self.source.lower().startswith('zu '):
