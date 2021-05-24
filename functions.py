@@ -87,19 +87,18 @@ class WarningLevel(Enum):
     CLEAR = 0
     FAILURE = 1
     SPELLING = 2
+    WRONG_FORM = 3
 
 articles = { 'der ', 'die ', 'das ' }
 class Translation:
-    def __init__(self, source: str, dest: str, freq: int, pos: str) -> None:
+    def __init__(self, source: str, dest: str) -> None:
         self.source = source
         self.dest = dest
-        self.freq = freq
-        self.pos = pos
     
     @staticmethod
     def from_sheet(line: str) -> 'Translation':
-        source, dest, freq, pos = line.split('\t')
-        return Translation(source, dest, int(freq), pos)
+        source, dest = line.split('\t')
+        return Translation(source, dest)
 
     def get_root_source(self) -> str:
         if self.source.lower().startswith('zu '):
@@ -115,7 +114,25 @@ class Translation:
             return self.dest[4:]
         return self.dest.lower()
 
-    # change the dictionary here to enchant
+    def attempt_fixes(self) -> None:
+        dest = self.get_root_dest()
+        if self.pos == 'VERB':
+            dest = self.get_root_dest()
+            if dest.endswith('ing'):
+                dest = dest[:-3]
+                if not english_dict.check(dest):
+                    dest += 'e'
+                    if not english_dict.check(dest):
+                        dest = self.get_root_dest()
+            self.dest = f'to {dest}'
+
+        elif self.pos == 'NOUN':
+            if dest.startswith('that '):
+                dest = dest[5:]
+            if not dest.startswith('the '):
+                dest = f'the {dest}'
+            self.dest = dest
+
     def get_warning_category(self) -> 'WarningLevel':
         if self.get_root_dest() == self.get_root_source():
             return WarningLevel.FAILURE
